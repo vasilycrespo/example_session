@@ -26,14 +26,11 @@
         "APP_ID": "181932822203641",
         "APP_NAME": "example_session"
       },
-      "locator": "../phonegap-facebook-plugin",
+      "locator": "https://github.com/phonegap/phonegap-facebook-plugin.git",
       "id": "phonegap-facebook-plugin"
     }
   ],
   "cordovaPlatforms": [
-    {
-      "platform": "android",
-      "locator": "browser"
-    }
+    "android"
   ]
 }
