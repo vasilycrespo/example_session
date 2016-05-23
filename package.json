@@ -28,6 +28,13 @@
       },
       "locator": "https://github.com/phonegap/phonegap-facebook-plugin.git",
       "id": "phonegap-facebook-plugin"
+    },
+    {
+      "variables": {
+        "REVERSED_CLIENT_ID": "133055305141-hooov7sslhij4lih6nfij3gkqrasavbt.apps.googleusercontent.com"
+      },
+      "locator": "cordova-plugin-googleplus",
+      "id": "cordova-plugin-googleplus"
     }
   ],
   "cordovaPlatforms": [

@@ -19,7 +19,8 @@
     <script src="cordova.js"></script>
 
     <!-- your app's js -->
-    <script src="js/services/user.service.js"></script>
+    <script src="js/services/google.user.service.js"></script>
+    <script src="js/services/facebook.user.service.js"></script>
     <script src="js/app.js"></script>
     <script src="js/controller/connect.controller.js"></script>
   </head>
@@ -30,33 +31,59 @@
       </ion-header-bar>
       <ion-content>
 
-
-      <a class="facebook-sign-in button button-block" ng-click="facebookSignIn()">Login with Facebook</a>
-      <div ng-show="!api.facebook" style="text-align: center">
-        <span>Not connected yet</span>
-      </div>
-
-      <div ng-show="api.facebook" style="text-align: center;">
-        <span>Connection success!</span> <br><br>
-
-        <div style="width: 90%; margin-left: 5%; min-height: 50px; background-color: #efefef">
-          <ul>
-            <li>
-              <strong>name: </strong><span>{{facebookUser.name}}</span>
-            </li>
-            <li>
-              <strong>userID: </strong><span>{{facebookUser.userID}}</span>
-            </li>
-            <li>
-              <strong>email: </strong><span>{{facebookUser.email}}</span>
-            </li>
-          </ul>
-          <br>
+        <!-- facebook section -->
+        <a class="facebook-sign-in button button-block" ng-click="facebookSignIn()">Login with Facebook</a>
+        <div ng-show="!api.facebook" style="text-align: center">
+          <span>Not connected yet</span>
         </div>
-        <img style="margin-top: 20px" src="{{facebookUser.picture}}"> <br>
-        <a class="button button-assertive button-block button-outline" ng-click="showLogOutMenu()">Log Out</a>
-      </div>
+        <div ng-show="api.facebook" style="text-align: center;">
+          <span>Connection success!</span> <br><br>
+          <div style="width: 90%; margin-left: 5%; min-height: 50px; background-color: #efefef">
+            <ul>
+              <li>
+                <strong>name: </strong><span>{{facebookUser.name}}</span>
+              </li>
+              <li>
+                <strong>userID: </strong><span>{{facebookUser.userID}}</span>
+              </li>
+              <li>
+                <strong>email: </strong><span>{{facebookUser.email}}</span>
+              </li>
+            </ul>
+            <br>
+          </div>
+          <img style="margin-top: 20px" src="{{facebookUser.picture}}"> <br>
+          <a class="button button-assertive button-block button-outline" ng-click="showLogOutMenu()">Log Out</a>
+        </div>
       
+        <!-- google section -->
+        <a class="google-sign-in button button-block" ng-click="googleSignIn()">Sign in with Google</a>
+        <div ng-show="!api.google" style="text-align: center">
+          <span>Not connected yet</span>
+        </div>
+        <div ng-show="api.google" style="text-align: center;">
+          <span>Connection success!</span> <br><br>
+          <div style="width: 90%; margin-left: 5%; min-height: 50px; background-color: #efefef">
+            
+            <ul>
+              <li>
+                <strong>name: </strong><span>{{googleUser.name}}</span>
+              </li>
+              <li>
+                <strong>userID: </strong><span>{{googleUser.userID}}</span>
+              </li>
+              <li>
+                <strong>email: </strong><span>{{googleUser.email}}</span>
+              </li>
+            </ul>
+            <br>
+
+          </div>
+          <img style="margin-top: 20px" src="{{googleUser.picture}}"> <br>
+          <a class="button button-assertive button-block button-outline" ng-click="LogOutGoogle()">Log Out</a>
+
+        </div>
+
       </ion-content>
     </ion-pane>
   </body>

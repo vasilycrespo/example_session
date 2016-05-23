@@ -1,6 +1,6 @@
-app.controller('connectCtrl', function($scope, $timeout, $state, $q, UserService, $ionicLoading, $ionicActionSheet) {
+app.controller('connectCtrl', function($scope, $timeout, $state, $q, facebookService, googleService, $ionicLoading, $ionicActionSheet) {
   
-  $scope.api = {"facebook": false};
+  $scope.api = {"facebook": false, "google": false };
   // This is the success callback from the login method
   var fbLoginSuccess = function(response) {
     if (!response.authResponse){
@@ -12,7 +12,7 @@ app.controller('connectCtrl', function($scope, $timeout, $state, $q, UserService
     getFacebookProfileInfo(authResponse)
     .then(function(profileInfo) {
       // For the purpose of this example I will store user data on local storage
-      UserService.setUser({
+      facebookService.setUser({
         authResponse: authResponse,
 				userID: profileInfo.id,
 				name: profileInfo.name,
@@ -52,8 +52,8 @@ app.controller('connectCtrl', function($scope, $timeout, $state, $q, UserService
 
   $scope.localConnect = function () {
       $scope.api.facebook = true;
-      $scope.facebookUser = UserService.getUser();
-      console.log(UserService.getUser());
+      $scope.facebookUser = facebookService.getUser();
+      console.log(facebookService.getUser());
       $scope.$apply();
   };
 
@@ -67,13 +67,13 @@ app.controller('connectCtrl', function($scope, $timeout, $state, $q, UserService
         // and signed request each expire
         console.log('getLoginStatus', success.status);
     		// Check if we have our user saved
-    		var user = UserService.getUser('facebook');
+    		var user = facebookService.getUser('facebook');
 
     		if(!user.userID){
 					getFacebookProfileInfo(success.authResponse)
 					.then(function(profileInfo) {
 						// For the purpose of this example I will store user data on local storage
-						UserService.setUser({
+						facebookService.setUser({
 							authResponse: success.authResponse,
 							userID: profileInfo.id,
 							name: profileInfo.name,
@@ -126,8 +126,8 @@ app.controller('connectCtrl', function($scope, $timeout, $state, $q, UserService
 		          $scope.api.facebook = false;
 		          $scope.facebookUser = {};
 		           $timeout(function() {
-				     $ionicLoading.hide();
-				   }, 2000);
+				        $ionicLoading.hide();
+				       }, 2000);
 
 		        },
 		        function(fail){
@@ -137,5 +137,69 @@ app.controller('connectCtrl', function($scope, $timeout, $state, $q, UserService
 		});
 	};
 
+  /* ----------------------------- GOOGLE --------------------------- */
+  // This method is executed when the user press the "Sign in with Google" button
 
+  $scope.googleSignIn = function() {
+    $ionicLoading.show({
+      template: 'Logging in...'
+    });
+
+    window.plugins.googleplus.login(
+      {},
+      function (user_data) {
+        googleService.setUser({
+          userID: user_data.userId,
+          name: user_data.displayName,
+          email: user_data.email,
+          picture: user_data.imageUrl,
+          accessToken: user_data.accessToken,
+          idToken: user_data.idToken
+        });
+        $ionicLoading.hide();
+        $scope.googleConnect();
+      },
+      function (msg) {
+        $ionicLoading.hide();
+      }
+    );
+  };
+
+  $scope.googleConnect = function () {
+      $scope.api.google = true;
+      $scope.googleUser = googleService.getUser();
+      $scope.$apply();
+  };
+
+  $scope.LogOutGoogle = function() {
+    var hideSheet = $ionicActionSheet.show({
+      destructiveText: 'Logout',
+      titleText: 'Are you sure you want to logout from google + ?',
+      cancelText: 'Cancel',
+      cancel: function() {},
+      buttonClicked: function(index) {
+        return true;
+      },
+      destructiveButtonClicked: function(){
+        $ionicLoading.show({
+          template: 'Logging out...'
+        });
+        hideSheet();
+        // Google logout
+        window.plugins.googleplus.logout(
+          function (msg) {
+            $ionicLoading.hide();
+            $scope.api.google = false;
+            $scope.googleUser = {};
+             $timeout(function() {
+              $ionicLoading.hide();
+             }, 2000);
+          },
+          function(fail){
+            console.log(fail);
+          }
+        );
+      }
+    });
+  };
 })
