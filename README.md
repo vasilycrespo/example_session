@@ -35,7 +35,7 @@ $ ionic state restore
 $ ionic config build
 ```
 
-Finalmente ejecutar la aplicacion por con el siguiente comando para lanzar la app en android una vez el telefono esta conectado por usb y con el modo usb debug habilitado, reemplazar [local-ip] por la direccion ip de la maquina que servira de host:
+Finalmente, ejecutar la aplicacion con el siguiente comando para lanzar la app por el telefono conectado via usb (el modo usb debug debe esta habilitado), reemplazar [local-ip] por la direccion ip de la maquina que servira de host:
 
 ```sh
 $ ionic run android -l -c --address [local-ip]
