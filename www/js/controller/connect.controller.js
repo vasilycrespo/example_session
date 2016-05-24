@@ -53,7 +53,6 @@ app.controller('connectCtrl', function($scope, $timeout, $state, $q, facebookSer
   $scope.localConnect = function () {
       $scope.api.facebook = true;
       $scope.facebookUser = facebookService.getUser();
-      console.log(facebookService.getUser());
       $scope.$apply();
   };
 
@@ -125,6 +124,7 @@ app.controller('connectCtrl', function($scope, $timeout, $state, $q, facebookSer
 		        facebookConnectPlugin.logout(function(){
 		          $scope.api.facebook = false;
 		          $scope.facebookUser = {};
+              window.localStorage.facebookPermissions = JSON.stringify([]);
 		           $timeout(function() {
 				        $ionicLoading.hide();
 				       }, 2000);
@@ -136,6 +136,54 @@ app.controller('connectCtrl', function($scope, $timeout, $state, $q, facebookSer
 			}
 		});
 	};
+
+
+  $scope.FBPermissionsPost = function () {
+    facebookConnectPlugin.login(["publish_actions"],function (response){
+        console.log("----------");
+        console.log(JSON.stringify(response));
+        if(response.status == "connected") {
+          facebookService.setPermissions("post",true);
+          $scope.FBPost();
+        }
+      }, function (error) {
+        console.log("FB ERROR: " + JSON.stringify(error)); 
+      }
+    );
+  };
+
+  $scope.message = "Default message";
+
+  $scope.FBAction = function () {
+    facebookConnectPlugin.getLoginStatus( function(response) {
+                var url = '/me/feed?method=post&message=' + encodeURIComponent($scope.message) + '&access_token=' + facebookService.getUser().authResponse.accessToken;
+                facebookConnectPlugin.api(
+                    url,
+                    ['publish_actions'],
+                function (response) { console.log(JSON.stringify(response)); },
+                function (error) { console.error(JSON.stringify(error)); }
+                );
+            });
+  }
+
+
+  $scope.FBPost = function () {
+    if(facebookService.inPermissions("post")) {
+      $scope.FBAction();
+      return;
+    }
+    facebookConnectPlugin.login(["publish_actions"],
+        function (response){
+            if(response.status == "connected")
+                window.localStorage.setItem("fbtoken",response.authResponse.accessToken);
+                console.log("FB to publish_actions: " + JSON.stringify(response));
+                facebookService.setPermissions("post");
+                $scope.FBAction();   
+        }, 
+            function (error) { console.log("FB ERROR: " + JSON.stringify(error)); }
+    );
+  }
+
 
   /* ----------------------------- GOOGLE --------------------------- */
   // This method is executed when the user press the "Sign in with Google" button
@@ -168,7 +216,7 @@ app.controller('connectCtrl', function($scope, $timeout, $state, $q, facebookSer
   $scope.googleConnect = function () {
       $scope.api.google = true;
       $scope.googleUser = googleService.getUser();
-      $scope.$apply();
+      $scope.$apply();                                                                                                                                                                                                                                                       
   };
 
   $scope.LogOutGoogle = function() {
